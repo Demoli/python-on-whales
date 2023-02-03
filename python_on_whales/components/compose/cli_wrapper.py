@@ -56,7 +56,7 @@ class ComposeCLI(DockerCLICaller):
             return
         elif services is not None:
             full_cmd += services
-        run(full_cmd, capture_stdout=False)
+        return run(full_cmd, capture_stdout=(not quiet), capture_stderr=(not quiet), return_stderr=(not quiet))
 
     def config(self, return_json: bool = False) -> Union[ComposeConfig, Dict[str, Any]]:
         """Returns the configuration of the compose stack for further inspection.
@@ -120,7 +120,7 @@ class ComposeCLI(DockerCLICaller):
             return
         elif services is not None:
             full_cmd += to_list(services)
-        run(full_cmd, capture_stdout=False)
+        return run(full_cmd, capture_stdout=(not quiet), capture_stderr=(not quiet), return_stderr=(not quiet))
 
     def down(
         self,
@@ -151,7 +151,7 @@ class ComposeCLI(DockerCLICaller):
         full_cmd.add_simple_arg("--timeout", timeout)
         full_cmd.add_flag("--volumes", volumes)
 
-        run(full_cmd, capture_stderr=quiet, capture_stdout=quiet)
+        return run(full_cmd, capture_stdout=(not quiet), capture_stderr=(not quiet), return_stderr=(not quiet))
 
     def events(self):
         """Not yet implemented"""
@@ -414,7 +414,7 @@ class ComposeCLI(DockerCLICaller):
         elif services is not None:
             services = to_list(services)
             full_cmd += services
-        run(full_cmd, capture_stdout=False, capture_stderr=False)
+        return run(full_cmd, capture_stdout=(not quiet), capture_stderr=(not quiet), return_stderr=(not quiet))
 
     def push(self, services: Optional[List[str]] = None):
         """Push service images
@@ -488,7 +488,7 @@ class ComposeCLI(DockerCLICaller):
             return
         elif services is not None:
             full_cmd += to_list(services)
-        run(full_cmd)
+        return run(full_cmd, capture_stdout=(not quiet), capture_stderr=(not quiet), return_stderr=(not quiet))
 
     def run(
         self,
@@ -726,7 +726,8 @@ class ComposeCLI(DockerCLICaller):
             services = to_list(services)
             full_cmd += services
         # important information is written to both stdout AND stderr.
-        run(full_cmd, capture_stdout=quiet, capture_stderr=quiet)
+        return run(full_cmd, capture_stdout=(not quiet), capture_stderr=(not quiet), return_stderr=(not quiet))
+
 
     def version(self) -> str:
         """Returns the version of docker compose as a `str`."""
